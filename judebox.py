@@ -13,7 +13,7 @@ gobject.threads_init()
 from mp3player import GstPlayer
 
 
-class FilesContainer:
+class FileProvider:
     def __init__(self, path):
         self.path = path
         self.mp3s = []
@@ -25,7 +25,7 @@ class FilesContainer:
                 if full_path.endswith(".mp3"):
                     self.mp3s.append(full_path)
 
-    def choose_file(self):
+    def pick_file(self):
         if self.mp3s:
             mp3 = random.choice(self.mp3s)
             self.mp3s.remove(mp3)
@@ -39,10 +39,10 @@ class Judebox:
         self.player = GstPlayer()
         self.player.register_callbacks(self.end)
 
-        self.files = FilesContainer("/home/franck/projets/python/carbox")
+        self.files = FileProvider("/home/franck/projets/python/carbox")
 
     def end(self):
-        mp3 = self.files.choose_file()
+        mp3 = self.files.pick_file()
         if mp3:
             self.player.start("file://" + mp3)
         print("end")
@@ -64,8 +64,9 @@ class Judebox:
                     break
                 elif line == '2':
                     print("start")
-                    mp3 = self.files.choose_file()
-                    self.player.start("file://" + mp3)
+                    mp3 = self.files.pick_file()
+                    if mp3:
+                        self.player.start("file://" + mp3)
                 elif line == '3':
                     print("pause")
                     self.player.pause()
