@@ -35,11 +35,13 @@ class FileProvider:
 
 
 class Judebox:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
+
         self.player = GstPlayer()
         self.player.register_callbacks(self.end)
 
-        self.files = FileProvider("/home/franck/projets/python/carbox")
+        self.files = FileProvider(config["directory"])
 
     def end(self):
         mp3 = self.files.pick_file()
@@ -47,7 +49,7 @@ class Judebox:
             self.player.start("file://" + mp3)
         print("end")
 
-    async def judebox(self):
+    async def roll(self):
         self.files.scan_directory()
 
         print("1: exit")

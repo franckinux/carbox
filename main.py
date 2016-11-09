@@ -1,19 +1,26 @@
 import asyncio
+import configparser
 import gbulb
 
+from gps import GpsTracker
 from judebox import Judebox
-from gps import poll
 
 
-async def scheduler(loop):
-    judebox = Judebox()
-    task1 = asyncio.ensure_future(judebox.judebox())
-    task2 = asyncio.ensure_future(poll(loop))
+async def main(loop):
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+
+    judebox = Judebox(dict(config.items("judebox")))
+    task1 = asyncio.ensure_future(judebox.roll())
+
+    gps_tracker = GpsTracker(dict(config.items("gps")))
+    task2 = asyncio.ensure_future(gps_tracker.track(loop))
+
     await task1
     task2.cancel()
     await task2
 
 gbulb.install()
 loop = asyncio.get_event_loop()
-loop.run_until_complete(scheduler(loop))
+loop.run_until_complete(main(loop))
 loop.close()

@@ -15,13 +15,18 @@ class Output(asyncio.Protocol):
             micro_gps.update(chr(char))
 
 
-async def poll(loop):
-    coro = create_serial_connection(loop, Output, '/dev/ttyACM0', baudrate=115200)
-    asyncio.ensure_future(coro)
+class GpsTracker:
+    def __init__(self, config):
+        self.config = config
 
-    while True:
-        try:
-            await asyncio.sleep(3)
+    async def track(self, loop):
+        coro = create_serial_connection(loop, Output, self.config["device"],
+                                        baudrate=self.config["baudrate"])
+        asyncio.ensure_future(coro)
+
+        while True:
+            try:
+                await asyncio.sleep(3)
+            except CancelledError:
+                break
             print(micro_gps.altitude, micro_gps.latitude, micro_gps.longitude)
-        except CancelledError:
-            break
