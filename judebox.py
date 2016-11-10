@@ -35,8 +35,9 @@ class FileProvider:
 
 
 class Judebox:
-    def __init__(self, loop, config):
+    def __init__(self, loop, queue, config):
         self.loop = loop
+        self.queue = queue
 
         self.player = GstPlayer()
         self.player.register_callbacks(self.end)
@@ -53,10 +54,11 @@ class Judebox:
         self.files.scan_directory()
 
         print("1: exit")
-        print("2: start")
-        print("3: pause")
-        print("4: play")
-        print("5: close")
+        print("2: judebox start")
+        print("3: judebox pause")
+        print("4: judebox play")
+        print("5: judebox close")
+        print("6: gps waypoint")
 
         while True:
             if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -78,4 +80,6 @@ class Judebox:
                 elif line == '5':
                     print("close")
                     self.player.close()
+                elif line == '6':
+                    await self.queue.put("waypoint")
             await asyncio.sleep(0.5)

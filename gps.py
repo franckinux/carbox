@@ -61,7 +61,7 @@ class GpxDocument:
 
         # add way points to document
         for wp in self.way_points:
-            document.append(Waypoint(wp[0], wp[1]))
+            document.append(wp)
 
         # write or overwrite gpx file
         f = open(gpx_file, "wb")
@@ -87,8 +87,9 @@ def dm2deg(degree, minute, hemisphere):
 
 
 class GpsTracker:
-    def __init__(self, loop, config):
+    def __init__(self, loop, queue, config):
         self.loop = loop
+        self.queue = queue
 
         self.baudrate = int(config["baudrate"])
         self.device = config["device"]
@@ -99,8 +100,25 @@ class GpsTracker:
         self.gpx_document = GpxDocument(config)
         self.danger = DangerZones(config)
 
-    async def track(self):
 
+        self.control_task = asyncio.ensure_future(self.control())
+
+    async def control(self):
+        while True:
+            try:
+                command = await self.queue.get()
+            except CancelledError:
+                break
+            if command == "waypoint":
+                if micro_gps.valid:
+                    self.gpx_document.add_way_point(
+                        Waypoint(
+                            dm2deg(*micro_gps.latitude),
+                            dm2deg(*micro_gps.longitude)
+                        )
+                    )
+
+    async def track(self):
         coro = create_serial_connection(self.loop, Output, self.device,
                                         baudrate=self.baudrate)
         asyncio.ensure_future(coro)
@@ -116,6 +134,8 @@ class GpsTracker:
                     if micro_gps.valid:
                         break
             except CancelledError:
+                self.control_task.cancel()
+                await self.control_task
                 break
 
             curr_point = LatLon(
