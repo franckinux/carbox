@@ -1,10 +1,47 @@
 import asyncio
 from concurrent.futures import CancelledError
-from gpxdata import LatLon
+import datetime
+from gpxdata import Document, LatLon, Track, TrackSegment, Waypoint
 from micropyGPS import MicropyGPS
+import os
 from serial_asyncio import create_serial_connection
 
 micro_gps = MicropyGPS()
+
+
+class GpxDocument:
+    def __init__(self, config):
+        self.directory = config["gpx-directory"]
+
+        self.track_points = []
+        self.way_points = []
+
+    def add_track_point(self, p):
+        self.track_points.append(p)
+
+    def add_way_point(self, wp):
+        self.way_points.append(wp)
+
+    def save(self):
+        # create gpx document from existing gpx file
+        today = datetime.date.today().strftime("%Y-%m-%d")
+        gpx_file = os.path.join(self.directory, today + '.xml')
+        document = Document(children=[], name=today)
+        if os.path.exists(gpx_file):
+            document = document.readGPX(gpx_file)
+
+        # add track to document
+        segment = TrackSegment(points=self.track_points)
+        document.append(Track(segments=[segment]))
+
+        # add way points to document
+        for wp in self.way_points:
+            document.append(Waypoint(wp[0], wp[1]))
+
+        # write or overwrite gpx file
+        f = open(gpx_file, "wb")
+        f.write(document.toGPX().toprettyxml(encoding="utf-8"))
+        f.close()
 
 
 class Output(asyncio.Protocol):
@@ -31,14 +68,15 @@ class GpsTracker:
         self.distance = float(config["distance"])
         self.interval = int(config["interval"])
 
+        self.gpx_document = GpxDocument(config)
+
     async def track(self, loop):
 
         coro = create_serial_connection(loop, Output, self.device,
                                         baudrate=self.baudrate)
         asyncio.ensure_future(coro)
 
-        last_point = curr_point = None
-        track = []
+        last_point = None
 
         while True:
             try:
@@ -55,6 +93,6 @@ class GpsTracker:
             if last_point is None or \
                last_point.distance(curr_point) >= self.distance:
                 last_point = curr_point
-                track.append(curr_point)
+                self.gpx_document.add_track_point(curr_point)
 
-        print(track)
+        self.gpx_document.save()
