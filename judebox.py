@@ -47,7 +47,7 @@ class Judebox:
     def end(self):
         mp3 = self.files.pick_file()
         if mp3:
-            self.player.start("file://" + mp3)
+            self.player.start(mp3)
         print("end")
 
     async def roll(self):
@@ -70,7 +70,7 @@ class Judebox:
                     print("start")
                     mp3 = self.files.pick_file()
                     if mp3:
-                        self.player.start("file://" + mp3)
+                        self.player.start(mp3)
                 elif line == '3':
                     print("pause")
                     self.player.pause()
