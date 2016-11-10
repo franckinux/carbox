@@ -10,11 +10,11 @@ async def main(loop):
     config = configparser.ConfigParser()
     config.read("config.ini")
 
-    judebox = Judebox(dict(config.items("judebox")))
+    judebox = Judebox(loop, dict(config.items("judebox")))
     task1 = asyncio.ensure_future(judebox.roll())
 
-    gps_tracker = GpsTracker(dict(config.items("gps")))
-    task2 = asyncio.ensure_future(gps_tracker.track(loop))
+    gps_tracker = GpsTracker(loop, dict(config.items("gps")))
+    task2 = asyncio.ensure_future(gps_tracker.track())
 
     await task1
     task2.cancel()

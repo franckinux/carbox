@@ -35,7 +35,9 @@ class FileProvider:
 
 
 class Judebox:
-    def __init__(self, config):
+    def __init__(self, loop, config):
+        self.loop = loop
+
         self.player = GstPlayer()
         self.player.register_callbacks(self.end)
 
