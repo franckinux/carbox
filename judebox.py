@@ -59,6 +59,7 @@ class Judebox:
         print("4: judebox play")
         print("5: judebox close")
         print("6: gps waypoint")
+        print("7: gps new track")
 
         while True:
             if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -82,4 +83,6 @@ class Judebox:
                     self.player.close()
                 elif line == '6':
                     await self.queue.put("waypoint")
+                elif line == '7':
+                    await self.queue.put("track")
             await asyncio.sleep(0.5)

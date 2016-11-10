@@ -68,6 +68,9 @@ class GpxDocument:
         f.write(document.toGPX().toprettyxml(encoding="utf-8"))
         f.close()
 
+        self.track_points = []
+        self.way_points = []
+
 
 class Output(asyncio.Protocol):
     def connection_made(self, transport):
@@ -117,6 +120,8 @@ class GpsTracker:
                             dm2deg(*micro_gps.longitude)
                         )
                     )
+            elif command == "track":
+                self.gpx_document.save()
 
     async def track(self):
         coro = create_serial_connection(self.loop, Output, self.device,
