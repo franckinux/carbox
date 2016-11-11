@@ -103,8 +103,7 @@ class GpsTracker:
         self.gpx_document = GpxDocument(config)
         self.danger = DangerZones(config)
 
-
-        self.control_task = asyncio.ensure_future(self.control())
+        self.control_task = None
 
     async def control(self):
         while True:
@@ -124,9 +123,16 @@ class GpsTracker:
                 self.gpx_document.save()
 
     async def track(self):
+        while not os.path.exists(self.device):
+            try:
+                await asyncio.sleep(1)
+            except CancelledError:
+                return
         coro = create_serial_connection(self.loop, Output, self.device,
                                         baudrate=self.baudrate)
         asyncio.ensure_future(coro)
+
+        self.control_task = asyncio.ensure_future(self.control())
 
         self.danger.load()
 
@@ -139,8 +145,9 @@ class GpsTracker:
                     if micro_gps.valid:
                         break
             except CancelledError:
-                self.control_task.cancel()
-                await self.control_task
+                if self.control_task is not None:
+                    self.control_task.cancel()
+                    await self.control_task
                 break
 
             curr_point = LatLon(
