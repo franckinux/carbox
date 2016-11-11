@@ -1,0 +1,8 @@
+gbulb==0.4
+gpxdata==1.2.0
+kdtree==0.15
+pygobject==3.22.0
+pyserial==3.2.1
+pyserial-asyncio==0.2
+python-dateutil==2.6.0
+six==1.10.0

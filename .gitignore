@@ -1,7 +1,8 @@
-*~
-__pycache__
-*.mp3
-*.zip
-magellan
-gpx
 md5sum.txt
+__pycache__
+*~
+*.zip
+gpx
+magellan
+mp3
+venv
