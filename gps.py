@@ -19,17 +19,20 @@ class DangerZones:
         self.tree = None
 
     def load(self):
-        points = []
-        for zone in os.listdir(self.directory):
-            if zone.startswith(self.country) and zone.endswith(".csv"):
-                with open(os.path.join(self.directory, zone)) as csvfile:
-                    reader = csv.reader(csvfile, delimiter=',', quotechar='"')
-                    for row in reader:
-                        points.append((float(row[1]), float(row[0])))
+        if os.path.isdir(self.directory):
+            points = []
+            for zone in os.listdir(self.directory):
+                if zone.startswith(self.country) and zone.endswith(".csv"):
+                    with open(os.path.join(self.directory, zone)) as csvfile:
+                        reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                        for row in reader:
+                            points.append((float(row[1]), float(row[0])))
 
-        self.tree = kdtree.create(points)
+            self.tree = kdtree.create(points)
 
     def find_nearest(self, point):
+        if self.tree is None:
+            return
         node, _ = self.tree.search_nn((point.lat, point.lon))
         return LatLon(node.data[0], node.data[1])
 
@@ -162,7 +165,8 @@ class GpsTracker:
 
             # danger zone feature
             danger_point = self.danger.find_nearest(curr_point)
-            if danger_point.distance(curr_point) <= self.danger_distance:
-                print("danger !!!")
+            if danger_point is not None and \
+               danger_point.distance(curr_point) <= self.danger_distance:
+                print("danger !!! ", danger_point.lat, danger_point.lon)
 
         self.gpx_document.save()
