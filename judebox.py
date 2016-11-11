@@ -62,10 +62,11 @@ class Judebox:
         print("1: exit")
         print("2: judebox start")
         print("3: judebox pause")
-        print("4: judebox play")
-        print("5: judebox close")
-        print("6: gps waypoint")
-        print("7: gps new track")
+        print("4: judebox go on")
+        print("5: judebox next")
+        print("6: judebox close")
+        print("7: gps waypoint")
+        print("8: gps new track")
 
         while True:
             if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -82,13 +83,19 @@ class Judebox:
                     print("pause")
                     self.player.pause()
                 elif line == '4':
-                    print("play")
+                    print("go on")
                     self.player.play()
                 elif line == '5':
+                    print("next")
+                    self.player.close()
+                    piece = self.files.pick_file()
+                    if piece:
+                        self.player.start(piece)
+                elif line == '6':
                     print("close")
                     self.player.close()
-                elif line == '6':
-                    await self.queue.put("waypoint")
                 elif line == '7':
+                    await self.queue.put("waypoint")
+                elif line == '8':
                     await self.queue.put("track")
             await asyncio.sleep(0.5)
