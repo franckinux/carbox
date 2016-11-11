@@ -37,8 +37,9 @@ class GstPlayer:
             err, dbg = msg.parse_error()
             self.error_cb("ERROR:", msg.src.get_name(), ":", err.message)
 
-    def start(self, mp3):
-        self.player.set_property("uri", "file://" + mp3)
+    def start(self, piece):
+        self.player.set_property("uri", "file://" + piece)
+        print("playing", piece)
         return self.play()
 
     def play(self):

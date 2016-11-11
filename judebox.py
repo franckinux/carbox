@@ -10,26 +10,32 @@ from gi.repository import GObject as gobject
 
 gobject.threads_init()
 
-from mp3player import GstPlayer
+from sound_player import GstPlayer
 
 
 class FileProvider:
-    def __init__(self, path):
-        self.path = path
-        self.mp3s = []
+    def __init__(self, config):
+        self.path = config["directory"]
+        self.extensions = config["extensions"].split(',')
+
+        self.pieces = []
 
     def scan_directory(self):
         for dir_path, subdir_list, file_list in os.walk(self.path):
             for fname in file_list:
                 full_path = os.path.join(dir_path, fname)
-                if full_path.endswith(".mp3"):
-                    self.mp3s.append(full_path)
+                try:
+                    extension = full_path.split('.')[-1]
+                except:
+                    continue
+                if extension in self.extensions:
+                    self.pieces.append(full_path)
 
     def pick_file(self):
-        if self.mp3s:
-            mp3 = random.choice(self.mp3s)
-            self.mp3s.remove(mp3)
-            return mp3
+        if self.pieces:
+            piece = random.choice(self.pieces)
+            self.pieces.remove(piece)
+            return piece
         else:
             return
 
@@ -42,12 +48,12 @@ class Judebox:
         self.player = GstPlayer()
         self.player.register_callbacks(self.end)
 
-        self.files = FileProvider(config["directory"])
+        self.files = FileProvider(config)
 
     def end(self):
-        mp3 = self.files.pick_file()
-        if mp3:
-            self.player.start(mp3)
+        piece = self.files.pick_file()
+        if piece:
+            self.player.start(piece)
         print("end")
 
     async def roll(self):
@@ -69,9 +75,9 @@ class Judebox:
                     break
                 elif line == '2':
                     print("start")
-                    mp3 = self.files.pick_file()
-                    if mp3:
-                        self.player.start(mp3)
+                    piece = self.files.pick_file()
+                    if piece:
+                        self.player.start(piece)
                 elif line == '3':
                     print("pause")
                     self.player.pause()
