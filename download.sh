@@ -8,7 +8,8 @@ if [ -f md5sum.txt ] ; then
       md5sum zones-de-danger-magellan.zip > md5sum.txt
    fi
 else
-   echo "coucou"
    md5sum zones-de-danger-magellan.zip > md5sum.txt
    unzip -o zones-de-danger-magellan.zip
 fi
+rm -f zones-de-danger-magellan.zip
+rm -rf __MACOSX
