@@ -2,7 +2,7 @@ import asyncio
 from concurrent.futures import CancelledError
 import csv
 import datetime
-from gpxdata import Document, LatLon, Track, TrackSegment, Waypoint
+from gpxdata import Document, LatLon, Point, Track, TrackSegment, Waypoint
 import kdtree
 from micropyGPS import MicropyGPS
 import os
@@ -153,8 +153,10 @@ class GpsTracker:
                     await self.control_task
                 break
 
-            curr_point = LatLon(
-                dm2deg(*micro_gps.latitude), dm2deg(*micro_gps.longitude)
+            curr_point = Point(
+                dm2deg(*micro_gps.latitude), dm2deg(*micro_gps.longitude),
+                ele=micro_gps.altitude,
+                t=datetime.datetime.now()
             )
 
             # tracking feature
