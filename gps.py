@@ -7,6 +7,7 @@ import kdtree
 from micropyGPS import MicropyGPS
 import os
 from serial_asyncio import create_serial_connection
+from ui import Buzzer()
 
 micro_gps = MicropyGPS()
 
@@ -105,6 +106,7 @@ class GpsTracker:
 
         self.gpx_document = GpxDocument(config)
         self.danger = DangerZones(config)
+        self.buzzer = Buzzer()
 
         self.control_task = None
 
@@ -124,6 +126,8 @@ class GpsTracker:
                     )
             elif command == "track":
                 self.gpx_document.save()
+            elif command == "buzzer":
+                self.buzzer.start()
 
     async def track(self):
         while not os.path.exists(self.device):
@@ -148,6 +152,7 @@ class GpsTracker:
                     if micro_gps.valid:
                         break
             except CancelledError:
+                self.buzzer.close()
                 if self.control_task is not None:
                     self.control_task.cancel()
                     await self.control_task
@@ -169,6 +174,9 @@ class GpsTracker:
             danger_point = self.danger.find_nearest(curr_point)
             if danger_point is not None and \
                danger_point.distance(curr_point) <= self.danger_distance:
-                print("danger !!! ", danger_point.lat, danger_point.lon)
+                self.buzzer.start()
+                # print("danger !!! ", danger_point.lat, danger_point.lon)
+            else:
+                self.buzzer.stop()
 
         self.gpx_document.save()

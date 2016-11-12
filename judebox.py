@@ -1,8 +1,7 @@
 import asyncio
 import os
 import random
-import select
-import sys
+from ui import Inputs, GO_ON, NEW_TRACK, NEXT, PAUSE, PLAY, STOP, SHUTDOWN, WAY_POINT
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -49,6 +48,7 @@ class Judebox:
         self.player.register_callbacks(self.end)
 
         self.files = FileProvider(config)
+        self.inputs = Inputs()
 
     def end(self):
         piece = self.files.pick_file()
@@ -59,43 +59,31 @@ class Judebox:
     async def roll(self):
         self.files.scan_directory()
 
-        print("1: exit")
-        print("2: judebox start")
-        print("3: judebox pause")
-        print("4: judebox go on")
-        print("5: judebox next")
-        print("6: judebox close")
-        print("7: gps waypoint")
-        print("8: gps new track")
-
         while True:
-            if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-                line = sys.stdin.readline().strip()
-                if line == '1':
-                    self.player.close()
-                    break
-                elif line == '2':
-                    print("start")
-                    piece = self.files.pick_file()
-                    if piece:
-                        self.player.start(piece)
-                elif line == '3':
-                    print("pause")
-                    self.player.pause()
-                elif line == '4':
-                    print("go on")
-                    self.player.play()
-                elif line == '5':
-                    print("next")
-                    self.player.close()
-                    piece = self.files.pick_file()
-                    if piece:
-                        self.player.start(piece)
-                elif line == '6':
-                    print("close")
-                    self.player.close()
-                elif line == '7':
-                    await self.queue.put("waypoint")
-                elif line == '8':
-                    await self.queue.put("track")
+            action = self.inputs.read()
+            if action == PLAY:
+                piece = self.files.pick_file()
+                if piece:
+                    self.player.start(piece)
+            elif action == PAUSE:
+                self.player.pause()
+            elif action == GO_ON:
+                self.player.play()
+            elif action == NEXT:
+                self.player.close()
+                piece = self.files.pick_file()
+                if piece:
+                    self.player.start(piece)
+            elif action == STOP:
+                self.player.close()
+            elif action == WAY_POINT:
+                await self.queue.put("waypoint")
+            elif action == NEW_TRACK:
+                await self.queue.put("track")
+            elif action == SHUTDOWN:
+                await self.queue.put("buzzer")
+                self.player.close()
+                self.inputs.close()
+                break
+
             await asyncio.sleep(0.5)
