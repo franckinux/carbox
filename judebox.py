@@ -1,7 +1,7 @@
 import asyncio
 import os
 import random
-from ui import Inputs, GO_ON, NEW_TRACK, NEXT, PAUSE, PLAY, STOP, SHUTDOWN, WAY_POINT
+from ui import Inputs, GO_ON, NEW_TRACK, NEXT, PAUSE, PLAY, SHUTDOWN, WAY_POINT
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -48,7 +48,7 @@ class Judebox:
         self.player.register_callbacks(self.end)
 
         self.files = FileProvider(config)
-        self.inputs = Inputs()
+        self.inputs = Inputs(5)
 
     def end(self):
         piece = self.files.pick_file()
@@ -74,8 +74,8 @@ class Judebox:
                 piece = self.files.pick_file()
                 if piece:
                     self.player.start(piece)
-            elif action == STOP:
-                self.player.close()
+            # elif action == STOP:
+            #     self.player.close()
             elif action == WAY_POINT:
                 await self.queue.put("waypoint")
             elif action == NEW_TRACK:

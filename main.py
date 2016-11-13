@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import asyncio
 import configparser
 import gbulb

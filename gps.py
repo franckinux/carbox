@@ -7,7 +7,7 @@ import kdtree
 from micropyGPS import MicropyGPS
 import os
 from serial_asyncio import create_serial_connection
-from ui import Buzzer()
+from ui import Buzzer
 
 micro_gps = MicropyGPS()
 
