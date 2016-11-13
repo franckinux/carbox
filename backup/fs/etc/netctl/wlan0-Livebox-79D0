@@ -1,0 +1,7 @@
+Description='Automatically generated profile by wifi-menu'
+Interface=wlan0
+Connection=wireless
+Security=wpa
+ESSID=Livebox-79D0
+IP=dhcp
+Key=Sorry!

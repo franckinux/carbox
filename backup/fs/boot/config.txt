@@ -1,0 +1,7 @@
+# See /boot/overlays/README for all available options
+
+gpu_mem=64
+
+device_tree_param=i2c_arm=on
+dtoverlay=i2c-rtc,ds3231
+dtparam=audio=on

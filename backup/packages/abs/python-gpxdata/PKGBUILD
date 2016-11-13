@@ -1,0 +1,30 @@
+pkgbase=gpxdata
+pkgname=('python-gpxdata' 'python2-gpxdata')
+pkgver=1.3.0
+pkgrel=1
+pkgdesc="Object-Oriented representation of GPX documents and conversion utilities between GPX, KML and OVL"
+arch=('any')
+license=('GPL')
+url="https://pypi.python.org/pypi/$pkgname/"
+makedepends=('python2' 'python2-setuptools' 'python' 'python-setuptools')
+depends=('python' 'python2' 'python-dateutil' 'python2-dateutil')
+options=(!emptydirs)
+source=(https://github.com/MauriceS/gpxdata/archive/$pkgver.tar.gz)
+md5sums=('653276cb71bac5ba49def94bc974c1b9')
+sha256sums=('9477d65f40ef333ebacaaad2a79ae0ea85130625910776522d243f32565e0715')
+# build() {
+#   cd $srcdir/$pkgbase-$pkgver
+#   python2 setup.py build
+# }
+
+package_python-gpxdata() {
+  depends=('python')
+  cd $srcdir/$pkgbase-$pkgver
+  python setup.py install --root="$pkgdir" --optimize=1
+}
+
+package_python2-gpxdata() {
+  depends=('python2')
+  cd $srcdir/$pkgbase-$pkgver
+  python2 setup.py install --root="$pkgdir" --optimize=1
+}

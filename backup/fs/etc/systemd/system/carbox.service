@@ -1,0 +1,12 @@
+[Unit]
+Description=Car judebox and gps tracking application
+     
+[Service]
+ExecStart=/home/franck/carbox/main.py
+StandardOutput=null
+Type=simple
+User=franck
+
+[Install]
+WantedBy=multi-user.target
+Alias=carbox.service

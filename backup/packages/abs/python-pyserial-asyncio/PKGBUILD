@@ -1,0 +1,21 @@
+# Contributor: Franck Barbenoire <contact@franck-barbenoire>
+
+pkgbase=pyserial-asyncio
+pkgname=('python-pyserial-asyncio')
+pkgver=0.2
+pkgrel=1
+pkgdesc="Python Serial Port Extension - Asynchronous I/O support"
+arch=('any')
+license=('BSD')
+url="https://pypi.python.org/pypi/$pkgname/"
+makedepends=('python' 'python-setuptools')
+depends=('python' 'python-pyserial')
+options=(!emptydirs)
+source=(https://github.com/pyserial/$pkgbase/archive/v$pkgver.tar.gz)
+md5sums=('52934ac0e69d75ad580cdaac53f605ba')
+sha256sums=('5f4ee349ea973286e7deb30f62627494f84201be6cf29e18df469473dfc89b83')
+
+package() {
+  cd $srcdir/$pkgbase-$pkgver
+  python setup.py install --root="$pkgdir" --optimize=1
+}
