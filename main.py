@@ -10,7 +10,7 @@ from judebox import Judebox
 
 async def main(loop):
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    config.read("/home/franck/carbox/config.ini")
 
     queue = asyncio.Queue()
 

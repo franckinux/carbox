@@ -2,7 +2,7 @@
 Description=Car judebox and gps tracking application
      
 [Service]
-ExecStart=/home/franck/carbox/main.py
+ExecStart=/home/franck/carbox/start.sh
 StandardOutput=null
 Type=simple
 User=franck
