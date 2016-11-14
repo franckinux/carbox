@@ -107,8 +107,8 @@ class GpsTracker:
         self.gpx_document = GpxDocument(config)
         self.danger = DangerZones(config)
         self.buzzer = Buzzer()
-
-        self.control_task = None
+        self.waiting_device = True
+        self.control_task = asyncio.ensure_future(self.control())
 
     async def control(self):
         while True:
@@ -116,33 +116,38 @@ class GpsTracker:
                 command = await self.queue.get()
             except CancelledError:
                 break
-            if command == "waypoint":
-                if micro_gps.valid:
-                    self.gpx_document.add_way_point(
-                        Waypoint(
-                            dm2deg(*micro_gps.latitude),
-                            dm2deg(*micro_gps.longitude)
-                        )
-                    )
-            elif command == "track":
-                self.gpx_document.save()
-            elif command == "buzzer":
+            if command == "buzzer":
                 self.buzzer.start()
+            elif not self.waiting_device:
+                if command == "waypoint":
+                    if micro_gps.valid:
+                        self.gpx_document.add_way_point(
+                            Waypoint(
+                                dm2deg(*micro_gps.latitude),
+                                dm2deg(*micro_gps.longitude)
+                            )
+                        )
+                elif command == "track":
+                    self.gpx_document.save()
+
+    async def close():
+        self.buzzer.close()
+        self.control_task.cancel()
+        await self.control_task
 
     async def track(self):
         while not os.path.exists(self.device):
             try:
                 await asyncio.sleep(1)
             except CancelledError:
+                await self.close()
                 return
+        self.waiting_device = False
         coro = create_serial_connection(self.loop, Output, self.device,
                                         baudrate=self.baudrate)
         asyncio.ensure_future(coro)
 
-        self.control_task = asyncio.ensure_future(self.control())
-
         self.danger.load()
-
         last_point = None
 
         while True:
@@ -152,10 +157,7 @@ class GpsTracker:
                     if micro_gps.valid:
                         break
             except CancelledError:
-                self.buzzer.close()
-                if self.control_task is not None:
-                    self.control_task.cancel()
-                    await self.control_task
+                await self.close()
                 break
 
             curr_point = Point(

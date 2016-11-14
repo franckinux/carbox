@@ -51,10 +51,10 @@ class Judebox:
         self.inputs = Inputs(5)
 
     def end(self):
+        print("end")
         piece = self.files.pick_file()
         if piece:
             self.player.start(piece)
-        print("end")
 
     async def roll(self):
         self.files.scan_directory()
