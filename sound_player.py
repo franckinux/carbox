@@ -1,52 +1,65 @@
-import gi
-gi.require_version('Gst', '1.0')
-from gi.repository import GObject, Gst as gst
-
-GObject.threads_init()
-gst.init(None)
+import aiompd
+import random
 
 
-class GstPlayer:
+class MyMpdClient(aiompd.Client):
+
+    @aiompd.helpers.lock
+    async def set_random(self, value):
+        assert type(value) == bool
+        value = 1 if value else 0
+        await self._send_command('random', value)
+
+    @aiompd.helpers.lock
+    async def set_consume(self, value):
+        assert type(value) == bool
+        value = 1 if value else 0
+        await self._send_command('consume', value)
+
+    @aiompd.helpers.lock
+    async def list(self, type_):
+        assert type_ in ("any", "base", "file", "modified-since")
+        response = await self._send_command('list', type_)
+        lines = response.decode("utf-8").split('\n')
+        files = [file_ for file_ in lines if file_.startswith("file:")]
+        return [file_.split(':')[1].lstrip() for file_ in files]
+
+
+class MpdPlayer:
     def __init__(self):
-        self.player = gst.ElementFactory.make("playbin", "player")
+        self.client = MyMpdClient()
 
-        self.ok = True
-        if not self.player:
-            self.ok = False
-            return
+    async def open(self):
+        self.transport, _ = self.client.connect()
 
-        self.error_cb = None
-        self.eos_cb = None
+        await self.client.set_random(False)
+        await self.client.set_consume(True)
 
-        self.bus = self.player.get_bus()
-        self.bus.add_signal_watch()
-        self.bus.connect("message::eos", self.on_eos)
-        self.bus.connect("message::error", self.on_error)
+        files = await self.client.list("file")
+        random.shuffle(files)
 
-    def register_callbacks(self, eos_cb, error_cb=None):
-        self.eos_cb = eos_cb
-        self.error_cb = error_cb
+        status = await self.client.get_status()
+        playlist_length = status.playlistlength
 
-    def on_eos(self, bus, msg):
-        self.player.set_state(gst.State.NULL)
-        if self.eos_cb is not None:
-            self.eos_cb()
+        while playlist_length < 30:
+            try:
+                file_ = files.pop()
+            except:
+                break
+            await self.client.add(file_)
+            playlist_length += 1
 
-    def on_error(self, bus, msg):
-        if self.error_cb is not None:
-            err, dbg = msg.parse_error()
-            self.error_cb("ERROR:", msg.src.get_name(), ":", err.message)
+    async def play(self):
+        await self.client.play()
 
-    def start(self, piece):
-        self.player.set_property("uri", "file://" + piece)
-        print("playing", piece)
-        return self.play()
+    async def pause(self):
+        await self.client.pause()
 
-    def play(self):
-        return self.player.set_state(gst.State.PLAYING) != gst.StateChangeReturn.FAILURE
+    async def stop(self):
+        await self.client.stop()
 
-    def pause(self):
-        self.player.set_state(gst.State.PAUSED)
+    async def next(self):
+        await self.next.next()
 
-    def close(self):
-        self.player.set_state(gst.State.NULL)
+    async def close(self):
+        self.transport.disconnect()
