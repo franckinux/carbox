@@ -2,7 +2,6 @@
 
 import asyncio
 import configparser
-import gbulb
 
 from gps import GpsTracker
 from judebox import Judebox
@@ -24,7 +23,6 @@ async def main(loop):
     task2.cancel()
     await task2
 
-gbulb.install()
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main(loop))
 loop.close()

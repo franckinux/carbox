@@ -1,5 +1,5 @@
 import asyncio
-from ui import Inputs, NEW_TRACK, NEXT, PAUSE, PLAY, SHUTDOWN, STOP, WAY_POINT
+from ui import Inputs, NEW_TRACK, NEXT, SHUTDOWN, STOP, TOGGLE, WAY_POINT
 from sound_player import MpdPlayer
 
 
@@ -17,10 +17,8 @@ class Judebox:
 
         while True:
             action = self.inputs.read()
-            if action == PLAY:
-                await self.player.play()
-            elif action == PAUSE:
-                await self.player.pause()
+            if action == TOGGLE:
+                await self.player.toggle()
             elif action == NEXT:
                 await self.player.next()
             elif action == STOP:

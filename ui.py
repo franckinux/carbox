@@ -8,12 +8,11 @@ GPIO_IN4 = 23
 GPIO_BUZZER = 18
 
 SHUTDOWN = 0
-PLAY = 1
-PAUSE = 2
-GO_ON = 3
-NEXT = 4
-WAY_POINT = 5
-NEW_TRACK = 6
+TOGGLE = 1
+STOP = 2
+NEXT = 3
+WAY_POINT = 4
+NEW_TRACK = 5
 
 
 class Buzzer:
@@ -59,13 +58,13 @@ class Inputs:
             sum = i1 + i2 + i3 + i4
             if sum == 1:
                 if i1 == 1:
-                    return PLAY
+                    return TOGGLE
                 elif i2 == 1:
-                    return PAUSE
-                elif i3 == 1:
-                    return GO_ON
-                elif i4 == 1:
                     return NEXT
+                elif i3 == 1:
+                    return STOP
+                elif i4 == 1:
+                    pass
             elif sum == 2:
                 if i1 + i2 == 2:
                     return WAY_POINT

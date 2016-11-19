@@ -22,7 +22,7 @@ class MyMpdClient(aiompd.Client):
         response = await self._send_command('list', type_)
         lines = response.decode("utf-8").split('\n')
         files = [file_ for file_ in lines if file_.startswith("file:")]
-        return [file_.split(':')[1].lstrip() for file_ in files]
+        return [file_.split(": ")[1].lstrip() for file_ in files]
 
 
 class MpdPlayer:
@@ -30,8 +30,9 @@ class MpdPlayer:
         self.client = MyMpdClient()
 
     async def open(self):
-        self.transport, _ = self.client.connect()
+        self.transport, _ = await self.client.connect()
 
+        # await self.client.clear()
         await self.client.set_random(False)
         await self.client.set_consume(True)
 
@@ -46,20 +47,23 @@ class MpdPlayer:
                 file_ = files.pop()
             except:
                 break
-            await self.client.add(file_)
+            await self.client.add('"' + file_ + '"')
             playlist_length += 1
 
-    async def play(self):
-        await self.client.play()
-
-    async def pause(self):
-        await self.client.pause()
-
-    async def stop(self):
-        await self.client.stop()
+    async def close(self):
+        self.transport.disconnect()
 
     async def next(self):
         await self.next.next()
 
-    async def close(self):
-        self.transport.disconnect()
+    async def pause(self):
+        await self.client.pause()
+
+    async def play(self):
+        await self.client.play()
+
+    async def stop(self):
+        await self.client.stop()
+
+    async def toggle(self):
+        await self.client.toggle()
