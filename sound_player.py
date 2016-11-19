@@ -2,32 +2,9 @@ import aiompd
 import random
 
 
-class MyMpdClient(aiompd.Client):
-
-    @aiompd.helpers.lock
-    async def set_random(self, value):
-        assert type(value) == bool
-        value = 1 if value else 0
-        await self._send_command('random', value)
-
-    @aiompd.helpers.lock
-    async def set_consume(self, value):
-        assert type(value) == bool
-        value = 1 if value else 0
-        await self._send_command('consume', value)
-
-    @aiompd.helpers.lock
-    async def list(self, type_):
-        assert type_ in ("any", "base", "file", "modified-since")
-        response = await self._send_command('list', type_)
-        lines = response.decode("utf-8").split('\n')
-        files = [file_ for file_ in lines if file_.startswith("file:")]
-        return [file_.split(": ")[1].lstrip() for file_ in files]
-
-
 class MpdPlayer:
     def __init__(self):
-        self.client = MyMpdClient()
+        self.client = aiompd.Client()
 
     async def open(self):
         self.transport, _ = await self.client.connect()
