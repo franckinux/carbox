@@ -3,10 +3,9 @@ Description=Car judebox and gps tracking application
      
 [Service]
 ExecStart=/home/franck/carbox/start.sh
-StandardOutput=null
-Type=simple
+WorkingDirectory=/home/franck/carbox
+Type=idle
 User=franck
 
 [Install]
 WantedBy=multi-user.target
-Alias=carbox.service

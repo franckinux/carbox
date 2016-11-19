@@ -1,0 +1,22 @@
+# Contributor: Franck Barbenoire <contact@franck-barbenoire>
+
+pkgbase=aiompd
+pkgname=('python-aiompd')
+pkgver=master
+pkgrel=1
+pkgdesc=""
+arch=('any')
+license=('BSD')
+url="https://pypi.python.org/pypi/$pkgname/"
+makedepends=('python' 'python-setuptools')
+depends=('python' )
+options=(!emptydirs)
+source=(https://github.com/franckinux/aiompd/archive/master.zip)
+# source=(https://github.com/zzzsochi/aiompd/archive/$pkgver.tar.gz)
+md5sums=('e0a65cdee96fb960acad2f201826b99a')
+sha256sums=('08548046fed0b2ec1e9b37030161adc6cf90884b1a83bbb1cb942602c36c227d')
+
+package() {
+  cd $srcdir/$pkgbase-$pkgver
+  python setup.py install --root="$pkgdir" --optimize=1
+}
