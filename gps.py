@@ -130,7 +130,7 @@ class GpsTracker:
                 elif command == "track":
                     self.gpx_document.save()
 
-    async def close():
+    async def close(self):
         self.buzzer.close()
         self.control_task.cancel()
         await self.control_task

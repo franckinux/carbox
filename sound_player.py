@@ -27,11 +27,11 @@ class MpdPlayer:
             await self.client.add('"' + file_ + '"')
             playlist_length += 1
 
-    async def close(self):
-        self.transport.disconnect()
+    def close(self):
+        self.transport.close()
 
     async def next(self):
-        await self.next.next()
+        await self.client.next()
 
     async def pause(self):
         await self.client.pause()

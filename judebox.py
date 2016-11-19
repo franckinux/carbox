@@ -34,5 +34,3 @@ class Judebox:
                 break
 
             await asyncio.sleep(0.5)
-
-        await self.player.close()
