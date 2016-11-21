@@ -229,7 +229,7 @@ procps-ng 3.3.12-1
 psmisc 22.21-3
 pygobject-devel 3.22.0-1
 python 3.5.2-3
-python-aiompd master-1
+python-aiompd 0.3.2-1
 python-appdirs 1.4.0-4
 python-dateutil 2.6.0-1
 python-gobject 3.22.0-1
