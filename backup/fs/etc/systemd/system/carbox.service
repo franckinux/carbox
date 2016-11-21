@@ -1,5 +1,6 @@
 [Unit]
 Description=Car judebox and gps tracking application
+After=mpd.service
      
 [Service]
 ExecStart=/home/franck/carbox/start.sh
