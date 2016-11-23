@@ -2,7 +2,7 @@
 
 pkgbase=aiompd
 pkgname=('python-aiompd')
-pkgver=master
+pkgver=0.3.2
 pkgrel=1
 pkgdesc=""
 arch=('any')
@@ -11,10 +11,9 @@ url="https://pypi.python.org/pypi/$pkgname/"
 makedepends=('python' 'python-setuptools')
 depends=('python' )
 options=(!emptydirs)
-source=(https://github.com/franckinux/aiompd/archive/master.zip)
-# source=(https://github.com/zzzsochi/aiompd/archive/$pkgver.tar.gz)
-md5sums=('e0a65cdee96fb960acad2f201826b99a')
-sha256sums=('08548046fed0b2ec1e9b37030161adc6cf90884b1a83bbb1cb942602c36c227d')
+source=(https://github.com/zzzsochi/aiompd/archive/$pkgver.tar.gz)
+md5sums=('f3c8a4ea3885e2bf2daf7de642ce71d8')
+sha256sums=('34f9b34204d39faa734e827069b7c62134197132780a9c9ff1d3c301c0f66fbc')
 
 package() {
   cd $srcdir/$pkgbase-$pkgver
