@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import argparse
 import asyncio
 import configparser
 
@@ -8,8 +9,12 @@ from judebox import Judebox
 
 
 async def main(loop):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', "--config", required=True)
+    args = parser.parse_args()
+
     config = configparser.ConfigParser()
-    config.read("/home/franck/carbox/config.ini")
+    config.read(args.config)
 
     queue = asyncio.Queue()
 
