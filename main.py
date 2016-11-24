@@ -32,7 +32,7 @@ async def main(loop):
     else:
         return
 
-    ui = Ui(Input(), Buzzer())
+    ui = Ui(Input(5), Buzzer())
 
     judebox = Judebox(loop, queue, dict(config.items("judebox")), ui)
     task1 = asyncio.ensure_future(judebox.roll())
@@ -43,6 +43,9 @@ async def main(loop):
     await task1
     task2.cancel()
     await task2
+
+    ui.buzzer.close()
+
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main(loop))
