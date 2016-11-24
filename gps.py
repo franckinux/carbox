@@ -96,6 +96,7 @@ class GpsTracker:
     def __init__(self, loop, queue, config, ui):
         self.loop = loop
         self.queue = queue
+        self.ui = ui
 
         self.baudrate = int(config["baudrate"])
         self.device = config["device"]
@@ -173,9 +174,9 @@ class GpsTracker:
             danger_point = self.danger.find_nearest(curr_point)
             if danger_point is not None and \
                danger_point.distance(curr_point) <= self.danger_distance:
-                self.buzzer.start()
+                self.ui.buzzer.start()
                 # print("danger !!! ", danger_point.lat, danger_point.lon)
             else:
-                self.buzzer.stop()
+                self.ui.buzzer.stop()
 
         self.gpx_document.save()

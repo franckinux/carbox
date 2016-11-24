@@ -33,7 +33,6 @@ class Judebox:
             elif action == SHUTDOWN:
                 await self.queue.put("buzzer")
                 self.player.close()
-                self.inputs.close()
                 break
 
             await asyncio.sleep(0.5)

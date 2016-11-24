@@ -45,6 +45,7 @@ async def main(loop):
     await task2
 
     ui.buzzer.close()
+    ui.input.close()
 
 
 loop = asyncio.get_event_loop()
