@@ -1,22 +1,25 @@
 import asyncio
-from ui import Inputs, NEW_TRACK, NEXT, SHUTDOWN, STOP, TOGGLE, WAY_POINT
+
+from actions import NEXT, NEW_TRACK, STOP, SHUTDOWN, TOGGLE, WAY_POINT
 from sound_player import MpdPlayer
 
 
 class Judebox:
-    def __init__(self, loop, queue, config):
+    def __init__(self, loop, queue, config, ui):
         self.loop = loop
         self.queue = queue
+        self.ui = ui
 
         self.player = MpdPlayer()
 
-        self.inputs = Inputs(5)
-
     async def roll(self):
-        await self.player.open()
+        try:
+            await self.player.open()
+        except:
+            return
 
         while True:
-            action = self.inputs.read()
+            action = self.ui.input.read()
             if action == TOGGLE:
                 await self.player.toggle()
             elif action == NEXT:

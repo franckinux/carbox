@@ -7,7 +7,6 @@ import kdtree
 from micropyGPS import MicropyGPS
 import os
 from serial_asyncio import create_serial_connection
-from ui import Buzzer
 
 micro_gps = MicropyGPS()
 
@@ -94,7 +93,7 @@ def dm2deg(degree, minute, hemisphere):
 
 
 class GpsTracker:
-    def __init__(self, loop, queue, config):
+    def __init__(self, loop, queue, config, ui):
         self.loop = loop
         self.queue = queue
 
@@ -106,7 +105,6 @@ class GpsTracker:
 
         self.gpx_document = GpxDocument(config)
         self.danger = DangerZones(config)
-        self.buzzer = Buzzer()
         self.waiting_device = True
         self.control_task = asyncio.ensure_future(self.control())
 
@@ -117,7 +115,7 @@ class GpsTracker:
             except CancelledError:
                 break
             if command == "buzzer":
-                self.buzzer.start()
+                self.ui.buzzer.start()
             elif not self.waiting_device:
                 if command == "waypoint":
                     if micro_gps.valid:
@@ -131,7 +129,6 @@ class GpsTracker:
                     self.gpx_document.save()
 
     async def close(self):
-        self.buzzer.close()
         self.control_task.cancel()
         await self.control_task
 

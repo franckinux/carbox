@@ -1,21 +1,16 @@
 import os
 import pigpio
 
+from actions import NEXT, NEW_TRACK, STOP, SHUTDOWN, TOGGLE, WAY_POINT
+
 GPIO_IN1 = 12
 GPIO_IN2 = 25
 GPIO_IN3 = 24
 GPIO_IN4 = 23
 GPIO_BUZZER = 18
 
-SHUTDOWN = 0
-TOGGLE = 1
-STOP = 2
-NEXT = 3
-WAY_POINT = 4
-NEW_TRACK = 5
 
-
-class Buzzer:
+class RealBuzzer:
     def __init__(self):
         self.pi = pigpio.pi()
 
@@ -38,7 +33,7 @@ class Buzzer:
         self.pi.stop()
 
 
-class Inputs:
+class TouchkeyInput:
     def __init__(self, cycles):
         self.pi = pigpio.pi()
         self.cycles = cycles
