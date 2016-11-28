@@ -12,10 +12,6 @@ options=(!emptydirs)
 source=(https://github.com/stefankoegl/kdtree/archive/v$pkgver.tar.gz)
 md5sums=('9a0c0a50ce816cb8bdf86a0594179a30')
 sha256sums=('56df3bd2807b494717804fe3f49d60445143f2cd3fc92787f127f42dc5ecbbd9')
-# build() {
-#   cd $srcdir/$pkgbase-$pkgver
-#   python2 setup.py build
-# }
 
 package_python-kdtree() {
   depends=('python')
