@@ -6,3 +6,5 @@ __pycache__
 gpx
 magellan
 sounds
+*.tar.gz
+*.tar.xz

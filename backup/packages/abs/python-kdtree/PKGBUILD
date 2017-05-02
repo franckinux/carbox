@@ -1,7 +1,7 @@
 pkgbase=kdtree
 pkgname=('python-kdtree' 'python2-kdtree')
 pkgver=0.15
-pkgrel=1
+pkgrel=2
 pkgdesc="A Python implementation of a kd-tree"
 arch=('any')
 license=('ISCL')

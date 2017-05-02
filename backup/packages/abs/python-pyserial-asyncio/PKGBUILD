@@ -2,7 +2,7 @@
 
 pkgbase=pyserial-asyncio
 pkgname=('python-pyserial-asyncio')
-pkgver=0.3
+pkgver=0.4
 pkgrel=1
 pkgdesc="Python Serial Port Extension - Asynchronous I/O support"
 arch=('any')
@@ -12,8 +12,8 @@ makedepends=('python' 'python-setuptools')
 depends=('python' 'python-pyserial')
 options=(!emptydirs)
 source=(https://github.com/pyserial/$pkgbase/archive/v$pkgver.tar.gz)
-md5sums=('d8b1fb5092992535973ee0cb82f0a107')
-sha256sums=('1d7733dc2f45adc0bcaad2a7cfc02d2253975681ef13434a1eb6020125996341')
+md5sums=('67244fdc11cc31cf0ebf675c271c71d8  ')
+sha256sums=('c40677a8874d8c24d4423a97498746de776f6dbcd0efbb8fa43dcf011a589aee  ')
 
 package() {
   cd $srcdir/$pkgbase-$pkgver

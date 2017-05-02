@@ -3,7 +3,7 @@
 pkgbase=aiompd
 pkgname=('python-aiompd')
 pkgver=0.3.2
-pkgrel=1
+pkgrel=2
 pkgdesc=""
 arch=('any')
 license=('BSD')
