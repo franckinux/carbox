@@ -12,8 +12,8 @@ makedepends=('python' 'python-setuptools')
 depends=('python' 'python-pyserial')
 options=(!emptydirs)
 source=(https://github.com/pyserial/$pkgbase/archive/v$pkgver.tar.gz)
-md5sums=('67244fdc11cc31cf0ebf675c271c71d8  ')
-sha256sums=('c40677a8874d8c24d4423a97498746de776f6dbcd0efbb8fa43dcf011a589aee  ')
+md5sums=('228ba85a8048da047f4bfdc0d356e0a7')
+sha256sums=('cba1891589524772e52afab333228101d1a6162604bdb08656636ceefb7dd565')
 
 package() {
   cd $srcdir/$pkgbase-$pkgver
