@@ -2,7 +2,7 @@
 
 pkgbase=aiompd
 pkgname=('python-aiompd')
-pkgver=0.3.2
+pkgver=0.4.0
 pkgrel=2
 pkgdesc=""
 arch=('any')
@@ -12,8 +12,8 @@ makedepends=('python' 'python-setuptools')
 depends=('python' )
 options=(!emptydirs)
 source=(https://github.com/zzzsochi/aiompd/archive/$pkgver.tar.gz)
-md5sums=('f3c8a4ea3885e2bf2daf7de642ce71d8')
-sha256sums=('34f9b34204d39faa734e827069b7c62134197132780a9c9ff1d3c301c0f66fbc')
+md5sums=('8a19cc0620a258de187d32550cd63bc0')
+sha256sums=('c122ce7ebf48198707155a7540a356851bec6e90e197d7df0638c0399cfd503f')
 
 package() {
   cd $srcdir/$pkgbase-$pkgver
